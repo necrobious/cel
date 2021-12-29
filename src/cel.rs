@@ -20,7 +20,7 @@ impl FromStr for InputType {
 
     fn from_str(src: &str) -> Result<Self, Self::Err> {
         match src {
-            "hex-v1" =>  Ok(Self::HexV1),
+            "hex" | "hex-v1" => Ok(Self::HexV1),
             //TODO: add b64 support
             //"base64" | "b64"  => Ok(Self::Base64),
             //"base64url" | "b64url" => Ok(Self::Base64url),
@@ -49,7 +49,7 @@ struct Args {
     #[clap(display_order(11), short = 's', long, takes_value = true, required = true, help = "Number of choices to output")]
     choice_count: usize,
 
-    #[clap(display_order(21), short = 't', long, takes_value = true, required = true, possible_values(["hex"]), help = "Format of the 'input' value")]
+    #[clap(display_order(21), short = 't', long, takes_value = true, required = true, possible_values(["hex","hex-v1"]), help = "Format of the 'input' value")]
     input_type: InputType,
 
     #[clap(display_order(20), short = 'i', long, takes_value = true, required = true, help = "Data to convert to bytes and hash into the index of possible choices")]
@@ -59,11 +59,18 @@ struct Args {
     delimiter: String,
 
     #[clap(display_order(91), short = 'n', long, takes_value = false, help = "Do append a trailing newline to the output")]
-    omit_new_line: bool
+    omit_new_line: bool,
+
+    #[clap(display_order(99), short = 'v', long, parse(from_occurrences), multiple_occurrences = true)]
+    verbose: u8,
 }
 
 fn main() -> Result<(), IOError> {
     let args = Args::parse();
+    if args.verbose > 0 {
+        println!("{:#?}", args);
+        println!("--- ---");
+    }
     if args.input_type == InputType::HexV1 {
         let choices =
             choose_from_hex(args.input, args.choices, args.choice_count)
