@@ -61,7 +61,7 @@ struct Args {
     #[clap(display_order(91), short = 'n', long, takes_value = false, help = "Do append a trailing newline to the output")]
     omit_new_line: bool,
 
-    #[clap(display_order(99), short = 'v', long, parse(from_occurrences), multiple_occurrences = true)]
+    #[clap(display_order(99), short = 'v', long, parse(from_occurrences), multiple_occurrences = true, help = "Verbose mode, prints args to STDOUT.")]
     verbose: u8,
 }
 
